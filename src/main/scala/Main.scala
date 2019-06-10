@@ -1,5 +1,4 @@
 import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import scala.util.{Failure, Success}
 import scala.concurrent.Await
