@@ -9,7 +9,7 @@ trait Router {
   def route: Route
 }
 
-class TodoRouter(todoRepository: TodoRepository) extends Router with Directives {
+class TodoRouter(todoRepository: TodoRepository) extends Router with Directives with TodoDirectives {
 
   import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
@@ -17,11 +17,8 @@ class TodoRouter(todoRepository: TodoRepository) extends Router with Directives 
   override def route: Route  = pathPrefix("todos") {
     pathEndOrSingleSlash {
       get {
-        onComplete(todoRepository.all) {
-          case Success(todos) => complete(todos)
-          case Failure(exception) =>
-            println(exception.getMessage)
-            complete(StatusCodes.InternalServerError)
+        handleWithGeneric(todoRepository.all) { todos =>
+          complete(todos)
         }
       }
     } ~ path("done") {
